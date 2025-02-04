@@ -1,0 +1,12 @@
+ID Visite       | Médicament                | Test                      | Note                     
+--------------------------------------------------------------------------------------------------------------------
+  1             | Paracétamol               | Test sanguin              | Prendre avec repas       
+  1             | Paracétamol               | Test sanguin              | Prendre avec de la nourriture.
+  1             | Antibiotique              | Test1                     | Note1                    
+  2             | Antalgique                | Test2                     | Note2                    
+  1             | Antibiotique              | Test1                     | Note1                    
+  2             | Antalgique                | Test2                     | Note2                    
+  1             | Antibiotique              | Test1                     | Note1                    
+  2             | Antalgique                | Test2                     | Note2                    
+  1             | Antibiotique              | Test1                     | Note1                    
+  2             | Antalgique                | Test2                     | Note2                    
