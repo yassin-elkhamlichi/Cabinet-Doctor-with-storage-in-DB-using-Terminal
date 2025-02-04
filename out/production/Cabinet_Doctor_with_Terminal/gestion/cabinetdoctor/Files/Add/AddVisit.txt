@@ -1,0 +1,3 @@
+Fièvre  Grippe  Fièvre-Grise    2024-03-20 08:00:00    Consultation    50    1234567890
+Maux-de-tête    Migraine    note    2024-03-21 09:30:00    Consultation    60    1234567890
+Toux-Maux-de-tête-Fièvre    Persistante-Migraine    note     2024-03-21 11:15:00   Consultation  40   1234567890
