@@ -14,11 +14,14 @@ public class DBManager extends BDInfo {
 
     public static void createDBTables() throws SQLException{
         try {
-			String createBD = "Create Database if not exists cabinetdoctor;";
-			Connection con = DriverManager.getConnection(url, user, password);
+			String createBD = "CREATE DATABASE IF NOT EXISTS cabinetdoctor";
+			Connection con = DriverManager.getConnection(protocol + "//" + ip + ":" + port , user, password);
 			Statement stm = con.createStatement();
 			stm.execute(createBD);
 			System.out.println("Database has been created.");
+			con.close();
+			con = DriverManager.getConnection(url, user, password);
+			stm = con.createStatement();
 			String createRV = "Create Table if not exists RendezVous(\r\n"
 					+ "    id int PRIMARY KEY AUTO_INCREMENT,\r\n"
 					+ "    note text,\r\n"

@@ -6,6 +6,7 @@ import java.sql.*;
 
 public class Main extends BDInfo{
 	public static void main(String[] args) throws SQLException {
+		DBManager.createDBTables();
 		Scanner scan = new Scanner(System.in);
 		boolean quit=true;
 		while(quit) {

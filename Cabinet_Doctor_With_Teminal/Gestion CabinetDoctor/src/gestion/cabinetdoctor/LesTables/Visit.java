@@ -1,12 +1,12 @@
 package gestion.cabinetdoctor.LesTables;
 
-import lesTables.Patient;
+
 
 public class Visit {
 	private int id, montant;
 	private String symptoms, diagnostic, note, cin;
 	private String datetime;
-	private lesTables.Patient p;
+	private Patient p;
 	
 	public Visit(int id, String s, String d, String n, int m, String h, String cin) {
 		this.id = id;

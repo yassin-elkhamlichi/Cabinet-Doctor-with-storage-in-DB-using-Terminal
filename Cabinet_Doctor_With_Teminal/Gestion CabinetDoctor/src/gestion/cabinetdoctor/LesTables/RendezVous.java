@@ -1,4 +1,5 @@
-package lesTables;
+package gestion.cabinetdoctor.LesTables;
+
 import java.sql.Date;
 
 public class RendezVous {

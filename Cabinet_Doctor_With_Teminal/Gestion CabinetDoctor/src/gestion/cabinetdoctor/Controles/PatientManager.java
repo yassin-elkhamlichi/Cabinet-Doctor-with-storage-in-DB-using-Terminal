@@ -1,11 +1,12 @@
 package gestion.cabinetdoctor.Controles;
+import gestion.cabinetdoctor.LesTables.Patient;
+
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Scanner;
-import lesTables.Patient;
 public class PatientManager extends BDInfo {
 	 public static void ajouter() throws SQLException{
                  Connection con = null;
@@ -332,7 +333,7 @@ public class PatientManager extends BDInfo {
                                 int c = s.nextInt();
                                 switch(c) {
                                 case 0:
-                                    quit = true;
+                                    q = true;
                                     break;
                                 case 1:
                                     ajouter();
