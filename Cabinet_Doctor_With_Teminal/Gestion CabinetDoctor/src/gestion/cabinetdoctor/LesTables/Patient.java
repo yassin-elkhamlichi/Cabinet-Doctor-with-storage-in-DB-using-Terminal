@@ -16,11 +16,6 @@ public class Patient {
 		this.sexe = sexe;
 		this.ddn = ddn;
 	}
-//	public Patient(int id, String prenom, String nom) {
-//		this.id = id;
-//		this.nom = nom;
-//		this.prenom = prenom;
-//	}
 	public String toString() {
 		String gender = "Miss. ";
 		if(sexe == 'M') gender = "Mr. ";
@@ -29,14 +24,6 @@ public class Patient {
 				+"\tDate de Naissance: "+ ddn+"\r\n"
 				+"\tTelephone: "+tele+"\r\n";				
 	}
-
-//	public int getId() {
-//		return id;
-//	}
-
-//	public void setId(int id) {
-//		this.id = id;
-//	}
 
 	public String getNom() {
 		return nom;

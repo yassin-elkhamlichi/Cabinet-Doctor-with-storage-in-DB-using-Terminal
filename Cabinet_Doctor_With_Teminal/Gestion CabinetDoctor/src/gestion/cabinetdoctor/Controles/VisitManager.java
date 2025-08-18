@@ -125,19 +125,29 @@ public class VisitManager extends BDInfo{
 		Scanner s = new Scanner(System.in);
 		String sy, d, n, t;
 		int m;
-		sy = getIn(s, "Symptoms");
-		d = getIn(s, "Diagnostics");
-		n = getIn(s, "Note");
-		t = getIn(s, "Type");
+        System.out.println("Symptoms");
+		sy = s.nextLine();
+        System.out.println("Diagnostics");
+		d = s.nextLine();
+        System.out.println("Note");
+		n = s.nextLine();
+        System.out.println ("Type");
+		t = s.nextLine();
 		System.out.print("Prix >> ");	m = s.nextInt();
-		
-		String query = "insert into Visit(symptoms, diagnostics, note, deh, type, montant, cin) values("
-				+sy+d+n+"NOW(), "+t+m+", " + cin + ");";
+
+        // Incorrect and insecure code
+        String query = "INSERT INTO Visit (symptoms, diagnostics, note, deh, type, montant, cin) VALUES (?, ?, ?, NOW(), ?, ?, ?)";
 		System.out.println(query);
 		try {
 			Connection con = DriverManager.getConnection(url, user, password);
-			Statement sttm = con.createStatement();
-			sttm.executeUpdate(query);
+			PreparedStatement sttm = con.prepareStatement(query);
+			sttm.setString(1, sy);
+            sttm.setString(2, d);
+            sttm.setString(3, n);
+            sttm.setString(4, t);
+            sttm.setInt(5, m);
+            sttm.setString(6, cin);
+            int res = sttm.executeUpdate();
 			con.close();
 		} catch (SQLException e) {
 			System.err.println(e);

@@ -7,5 +7,5 @@ public class BDInfo {
 	protected static String ip = "127.0.0.1";
 	protected static int port = 3306;
 	protected static String url = protocol + "//" + ip + ":" + port + "/" + bdName+"?useSSL=false&serverTimezone=UTC";
-	protected static String filesPath = System.getProperty("user.dir") + "/src/gestion/cabinetdoctor/Files/";
+	protected static String filesPath = "Cabinet_Doctor_With_Teminal/Gestion CabinetDoctor/src/gestion/cabinetdoctor/Files";
 }

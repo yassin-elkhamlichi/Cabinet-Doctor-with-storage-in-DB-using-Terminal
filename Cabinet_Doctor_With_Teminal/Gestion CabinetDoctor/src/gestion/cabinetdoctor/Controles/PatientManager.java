@@ -19,7 +19,7 @@ public class PatientManager extends BDInfo {
                    savepoint1 = con.setSavepoint("save1");
 	        
 	         // C. Créer un objet PrepareStatement
-	        PreparedStatement psmt = con.prepareStatement("INSERT INTO patient VALUE (?,?,?,?,?,?)") ;
+	        PreparedStatement psmt = con.prepareStatement("INSERT INTO Patient VALUES (?,?,?,?,?,?)") ;
 	        Scanner scanner = new Scanner(System.in);
 
 	            System.out.println("Entrez les informations du patient :");
@@ -36,7 +36,7 @@ public class PatientManager extends BDInfo {
 	            String sexe = scanner.nextLine();
 
 	            System.out.print("Date de naissance (AAAA-MM-JJ) : ");
-	            String ddn = scanner.nextLine();
+				String ddn = scanner.nextLine();
 
 	            System.out.print("Téléphone : ");
 	            String tele = scanner.nextLine();
@@ -61,6 +61,68 @@ public class PatientManager extends BDInfo {
 
 	      }
 	    }
+	public static void modifierP() throws SQLException{
+		Connection con = null;
+		Savepoint savepoint1 = null;
+		try {
+			con = DriverManager.getConnection(url, user, password);
+			//definer la gestion des transition manuelles
+			con.setAutoCommit(false);
+			//definer un point de sauvegarder
+			savepoint1 = con.setSavepoint("save5");
+
+			// C. Créer un objet PrepareStatement
+			PreparedStatement psmt = con.prepareStatement("SELECT * Patient where cin = ?") ;
+			System.out.println("Entrez le CIN du patient à modifier :");
+			Scanner scanner = new Scanner(System.in);
+			String cin = scanner.nextLine();
+			psmt.setString(1, cin);
+			ResultSet res = psmt.executeQuery();
+			if (!res.next()) {
+				System.out.println("Aucun patient trouvé avec le CIN : " + cin);
+				return;
+			}
+			else{
+				System.out.println("Patient trouvé \n : Cin  : " + res.getString("cin") + " Nom : " + res.getString("nom") + "Prenom : " + res.getString("prenom") + " Sexe : " + res.getString("sexe") + " Ddn : " + res.getString("ddn") + " Tele : " + res.getString("tele")); }
+
+			System.out.println("Entrez les nouvelles informations du patient :");
+			System.out.print("new CIN : ");
+			cin = scanner.nextLine();
+			System.out.print("new Nom : ");
+			String nom = scanner.nextLine();
+
+			System.out.print("new Prénom : ");
+			String prenom = scanner.nextLine();
+
+			System.out.print("new Sexe (M/F) : ");
+			String sexe = scanner.nextLine();
+
+			System.out.print("new Date de naissance (AAAA-MM-JJ) : ");
+			String ddn = scanner.nextLine();
+
+			System.out.print("new Téléphone : ");
+			String tele = scanner.nextLine();
+
+			psmt.setString(1, cin);
+			psmt.setString(2, nom);
+			psmt.setString(3, prenom);
+			psmt.setString(4, sexe);
+			psmt.setString(5, ddn);
+			psmt.setString(6, tele);
+			psmt = con.prepareStatement("UPDATE Patient SET cin = cin, nom = nom , prenom = prenom , sexe = sexe ,ddn = ddn ,tele = tele WHERE  cin = ?") ;
+			int i = psmt.executeUpdate();
+
+			System.out.println(i+"Le patient inséré avec succès.");
+			con.commit();
+			// E. Fermer la connexion
+			con.close();
+		}  catch (SQLException e) {
+			// gestion des exceptions
+			assert con != null;
+			con.rollback(savepoint1);
+
+		}
+	}
          
      public static void ajouterFile() throws SQLException{
                 Connection con = null;
@@ -129,13 +191,13 @@ public class PatientManager extends BDInfo {
 		 Savepoint savepoint3= null;
 	        try {
 	         con = DriverManager.getConnection(url, user, password);
-                   //definer la gestion des transition manuelles
+			 //definer la gestion des transition manuelles
                     con.setAutoCommit(false);
-                  //definer un point de sauvegarder
+		     //definer un point de sauvegarder
                  savepoint3 = con.setSavepoint("save3");
 	         // C. Créer un objet Statement
 	         Statement smt = con.createStatement() ;
-	        String sql = "SELECT cin, nom, prenom, sexe, ddn, tele FROM Patient ORDER BY nom ASC";
+	        String sql = "SELECT * FROM Patient ORDER BY nom ASC";
             ResultSet res = smt.executeQuery(sql);  
 
             BufferedWriter writer = new BufferedWriter(new FileWriter(filesPath + "/List/ListPatient.txt"));
@@ -155,9 +217,19 @@ public class PatientManager extends BDInfo {
             String sexe = String.format("%-" + l2 + "s", res.getString("sexe"));
             String ddn = String.format("%-" + l1 + "s", res.getString("ddn"));
             String tele = String.format("%-" + l1 + "s", res.getString("tele"));
-            System.out.print(" " + cin + nom + prenom + sexe + ddn + tele + "\n");
+            System.out.print("Cin :  " + cin +
+					"| Nom : "	+ nom +
+					"| Prenom :" + prenom +
+					"| sexe :" + sexe +
+					"| ddn : " + ddn +
+					"| tele : " + tele + "\n");
             // Écrire chaque ligne dans le fichier
-            writer.write(" " + cin + nom + prenom + sexe + ddn + tele + "\n");
+            writer.write("Cin :  " + cin +
+					"| Nom : "	+ nom +
+					"| Prenom :" + prenom +
+					"| sexe :" + sexe +
+					"| ddn : " + ddn +
+					"| tele : " + tele + "\n");
         }
 
         // Fermer le flux d'écriture
@@ -167,6 +239,7 @@ public class PatientManager extends BDInfo {
 	         con.close();
 
 	        } catch (IOException | SQLException e) {
+                assert con != null;
                 con.rollback(savepoint3);
 
       }
@@ -184,18 +257,15 @@ public class PatientManager extends BDInfo {
                   //definer un point de sauvegarder
                 savepoint4 = con.setSavepoint("save4");
 	         // C. Créer un objet Statement
-	         Statement smt = con.createStatement() ;
+	         PreparedStatement smt = con.prepareStatement("DELETE FROM Patient WHERE cin = ?") ;
 	        System.out.print("Entrer CIN de patient à supprimer: ");
 	        @SuppressWarnings("resource")
 			Scanner scanner = new Scanner(System.in);
 	        String cin = scanner.nextLine();
 	          // D. Exécuter des requêtes
 	         System.out.println(" Suppression de patient de cin "+cin+" ...");
-	    
-	          String sql = "DELETE FROM Patient WHERE cin = '"+cin+"'";
-
-	         smt.executeUpdate(sql);
-	         
+	         smt.setString(1, cin);
+			 int i = smt.executeUpdate();
 	         System.out.println("Le patient est supprimé avec succés ...");
 			 con.commit();
 	         // E. Fermer la connexion
@@ -306,7 +376,8 @@ public class PatientManager extends BDInfo {
 					+ "    1- Afficher tous les patients\r\n"
 					+ "    2- Ajouter nouveau patient\r\n"
 					+ "    3- Supprimer un patient par id\r\n"
-					+ "    4- Selectionner un patient"
+					+ "    4- modifier un patient \r\n"
+					+ "    5- Selectionner un patient"
 					+ "    0- Retour");
 			@SuppressWarnings("resource")
 			Scanner scan = new Scanner(System.in);
@@ -347,7 +418,10 @@ public class PatientManager extends BDInfo {
 			case 3:
 				supprimerP();
 				break;
-			case 4:
+		    case 4:
+				modifierP();
+				break;
+			case 5:
 				selectPatient();
 				break;
 			}
