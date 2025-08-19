@@ -70,8 +70,7 @@ cd Cabinet-Doctor-with-storage-in-DB-using-Terminal
 2. Create a MySQL database (use schema from mclpd.pdf).
 
 
-3. Configure database connection in your Java code (DBManager class).
-
+3. Configure database connection in your Java code (DBManager class). 
 
 4. Compile and run the project:
 
@@ -88,19 +87,14 @@ java -cp bin gestion.cabinetdoctor.Main
 Add a setup script for automatic database creation.
 
 Build a graphical user interface (GUI).
-
-Implement user authentication (doctor / admin).
-
-Export reports (patients list, prescriptions, etc.).
-
-
+> ⚠️ This account already includes another version of the project with a Swing-based GUI, as well as one using JavaFX.
 
 ---
 
 ## 📖 Documentation
 
 **[Database Models ](https://github.com/yassin-elkhamlichi/Cabinet-Doctor-with-storage-in-DB-using-Terminal/blob/main/Cabinet_Doctor_With_Teminal/Tables.sql)**
-**[Database Diagrams]()**
+**[Database Diagrams](https://github.com/yassin-elkhamlichi/Cabinet-Doctor-with-storage-in-DB-using-Terminal/blob/main/Cabinet_Doctor_With_Teminal/mclpd.pdf)**
 
 Source code available in this repository.
 
