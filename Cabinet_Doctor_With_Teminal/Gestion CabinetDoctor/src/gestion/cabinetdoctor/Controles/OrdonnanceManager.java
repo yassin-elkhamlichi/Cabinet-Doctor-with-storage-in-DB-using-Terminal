@@ -116,7 +116,7 @@ public class OrdonnanceManager extends BDInfo {
 
 	// Vérifier si un visit existe
 	private static boolean visitExists(int visitId) throws SQLException {
-		String sql = "SELECT  FROM Visit WHERE id = ?";
+		String sql = "SELECT * FROM Visit WHERE id = ?";
 		try (Connection con = DriverManager.getConnection(url, user, password);
 			 PreparedStatement pstmt = con.prepareStatement(sql)) {
 			pstmt.setInt(1, visitId);
