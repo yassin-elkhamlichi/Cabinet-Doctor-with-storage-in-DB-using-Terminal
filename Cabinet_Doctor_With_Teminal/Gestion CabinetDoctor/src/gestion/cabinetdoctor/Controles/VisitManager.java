@@ -48,7 +48,7 @@ public class VisitManager extends BDInfo{
     }
 	// Vérifier si une visite existe
 	private static boolean visitExists(int visitId) throws SQLException {
-		String query = "SELEC * FROM Visit WHERE id = ?";
+		String query = "SELECT * FROM Visit WHERE id = ?";
 		try (Connection con = DriverManager.getConnection(url, user, password);
 			 PreparedStatement pstmt = con.prepareStatement(query)) {
 			pstmt.setInt(1, visitId);
@@ -179,8 +179,37 @@ public class VisitManager extends BDInfo{
 			System.err.println(e);
 		}
 	}
-        
-        
+
+	public static void supprimerVisit() throws SQLException {
+		Connection con = null;
+		try {
+			con = DriverManager.getConnection(url, user, password);
+
+			PreparedStatement smt = con.prepareStatement("DELETE FROM Visit WHERE id = ?");
+
+			System.out.print("Entrer ID de la visite à supprimer: ");
+			int id = scanner.nextInt();
+			clearScannerBuffer();
+
+			System.out.println("Suppression de la visite ID " + id + " ...");
+			smt.setInt(1, id);
+			int i = smt.executeUpdate();
+
+			if (i > 0) {
+				System.out.println("La visite a été supprimée avec succès!");
+			} else {
+				System.out.println("Aucune visite trouvée avec ID " + id);
+			}
+
+			con.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			if (con != null) {
+				con.close();
+			}
+		}
+	}
 	public static void printAll(String cin) {
 		String query = "SELECT DISTINCT V.* from Visit V, Patient P where V.cin = " + "'" + cin + "';";
 		try {

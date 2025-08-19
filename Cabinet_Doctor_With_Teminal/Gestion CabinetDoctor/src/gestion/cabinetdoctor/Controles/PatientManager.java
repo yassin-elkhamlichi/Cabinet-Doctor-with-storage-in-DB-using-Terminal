@@ -295,7 +295,7 @@ public class PatientManager extends BDInfo {
 					VisitManager.updateVisit();
 					break;
 				case 3:
-					VisitManager.;
+					VisitManager.supprimerVisit();
 					break;
 				case 4:
 					OrdonnanceManager.newOrd();
