@@ -11,7 +11,7 @@ public class Ordonnance {
 		this.setIdV(idV);
 	}
 	public String toString() {
-		return "Id : " + id + "\r\n"
+		return "\tId : " + id + "\r\n"
 				+ "\tMedicament : " + medicament + "\r\n"
 				+ "\tTest : " + test + "\r\n"
 				+ "\tNote : " + note + "\r\n";

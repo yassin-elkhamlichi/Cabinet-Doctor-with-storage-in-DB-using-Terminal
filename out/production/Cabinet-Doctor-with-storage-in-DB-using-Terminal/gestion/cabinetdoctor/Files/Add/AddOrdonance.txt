@@ -1,4 +1,0 @@
-Antibiotique    Test1   Note1   1
-Antalgique  Test2    Note2  2
-Anti-inflammatoire  Test3   Note3   3
-

@@ -8,7 +8,7 @@ import java.sql.*;
 
 /**
  *
- * @author yassin
+ * @author yassine
  */
 public class DBManager extends BDInfo {
 

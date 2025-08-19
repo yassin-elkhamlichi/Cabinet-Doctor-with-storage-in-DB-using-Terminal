@@ -25,10 +25,11 @@ public class VisitManager extends BDInfo{
 
         System.out.println("Liste des visites :");
         System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.printf("%-" + l3 + "s|%-" + l3 + "s|%-" + l3 + "s|%-" + l1 + "s|%-" + l1 + "s|%-" + l2 + "s|%-" + l2 + "s\n", "Symptômes", "Diagnostic", "Note", "Date/Heure", "Type", "Montant", "CIN");
+        System.out.printf("%-" + l3 + "s|%-" + l3 + "s|%-" + l3 + "s|%-" + l1 + "s|%-" + l1 + "s|%-" + l2 + "s|%-" + l2 + "s\n","ID", "Symptômes", "Diagnostic", "Note", "Date/Heure", "Type", "Montant", "CIN");
         System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
         while (res.next()) {
+            String ID = String.format("%-" + l3 + "s", res.getInt("id"));
             String symptoms = String.format("%-" + l3 + "s", res.getString("symptoms"));
             String diagnostics = String.format("%-" + l3 + "s", res.getString("diagnostics"));
             String note = String.format("%-" + l3 + "s", res.getString("note"));
@@ -38,7 +39,7 @@ public class VisitManager extends BDInfo{
             String cin = String.format("%-" + l2 + "s", res.getString("cin"));
 
             // Affichage dans la console
-            System.out.println(symptoms + "|" + diagnostics + "|" + note + "|" + deh + "|" + type + "|" + montant + "|" + cin);
+            System.out.println( ID + "|" +symptoms + "|" + diagnostics + "|" + note + "|" + deh + "|" + type + "|" + montant + "|" + cin);
 
         }
 

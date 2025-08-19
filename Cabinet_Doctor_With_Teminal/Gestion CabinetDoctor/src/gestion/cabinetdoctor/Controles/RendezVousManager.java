@@ -8,11 +8,11 @@ import java.util.Scanner;
 import java.sql.SQLException;
 
 /*
- * create by yassin
+ * create by yassine
  *
  */
 public class RendezVousManager extends BDInfo{
-    
+    public static  final Scanner scanner = new Scanner(System.in);
     public static void afficherRV() {
     try {
         Connection con = DriverManager.getConnection(url, user, password);
@@ -70,42 +70,160 @@ public class RendezVousManager extends BDInfo{
     	System.err.println(ex);
     }
 }
-
-    public static void ModifierRV(){
-		try {
-			Connection cn = DriverManager.getConnection(url, user, password);
-			Statement smt = cn.createStatement();
-			Scanner scanner = new Scanner(System.in);
-			
-			System.out.print("Enter the Patient's CIN: ");
-			String cin = scanner.nextLine();
-			System.out.print("Enter the new date (YYYY-MM-DD HH:MM:SS): ");
-			String Ndate = scanner.nextLine();  
-			String rqt = "UPDATE RendezVous SET date='" + Ndate + "' WHERE cinp='" + cin + "'";
-			int res = smt.executeUpdate(rqt);
-		} catch (SQLException e) {
-			System.err.println(e);
-		}
+    // Vérifier si un RV existe
+    private static boolean rvExists(int rvId) throws SQLException {
+        String query = "SELECT * FROM RendezVous WHERE id = ?";
+        try (Connection cn = DriverManager.getConnection(url, user, password);
+             PreparedStatement pstmt = cn.prepareStatement(query)) {
+            pstmt.setInt(1, rvId);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        }
     }
-  public static void NewRV() {
-    try {
-        Connection cn = DriverManager.getConnection(url, user, password);
-        Statement smt = cn.createStatement();
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter the new date (YYYY-MM-DD HH:MM:SS): ");
-        String Date = scanner.nextLine(); 
-        System.out.print("Patient CIN: ");
-        String cinp = scanner.nextLine();
-        String rqt = "INSERT INTO RendezVous (date, cinp) VALUES ('" +
-        Date + "', '" + cinp + "')";
-        smt.executeUpdate(rqt);
-        cn.close();
 
-        System.out.println("The appointment has been successfully added.");
-    } catch (Exception e) {
-        System.out.println(e);
+    // Vérifier si un patient existe
+    private static boolean patientExists(String cinP) throws SQLException {
+        String query = "SELECT * FROM Patient WHERE cin = ?";
+        try (Connection cn = DriverManager.getConnection(url, user, password);
+             PreparedStatement pstmt = cn.prepareStatement(query)) {
+            pstmt.setString(1, cinP);
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        }
     }
-}
+
+    // Afficher tous les rendez-vous (optionnel mais utile)
+    public static void displayAllRVs() throws SQLException {
+        String query = "SELECT id, date, heure, note, cinp FROM RendezVous ORDER BY date, heure";
+        try (Connection cn = DriverManager.getConnection(url, user, password);
+             Statement stmt = cn.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            System.out.println("ID\tDate\t\tHeure\t\tNote\t\tPatient CIN");
+            System.out.println("------------------------------------------------------------");
+            while (rs.next()) {
+                System.out.println(rs.getInt("id") + "\t" +
+                        rs.getString("date") + "\t" +
+                        rs.getString("heure") + "\t" +
+                        rs.getString("note") + "\t" +
+                        rs.getString("cinp"));
+            }
+        }
+    }
+ public static void ModifierRV(){
+         String rqt = "UPDATE RendezVous SET note = ?, date = ?, heure = ?, cinp = ? WHERE id = ?";
+
+         try (Connection cn = DriverManager.getConnection(url, user, password);
+              PreparedStatement pstmt = cn.prepareStatement(rqt)) {
+
+             // Afficher tous les rendez-vous pour aider l'utilisateur
+             System.out.println("=== LISTE DES RENDEZ-VOUS EXISTANTS ===");
+             displayAllRVs(); // Méthode à créer pour afficher tous les RVs
+
+             System.out.print("\nEnter the RV ID to update: ");
+             int rvId = scanner.nextInt();
+             clearScannerBuffer(); // Nettoyer le buffer après nextInt()
+
+             // Vérifier si le RV existe
+             if (!rvExists(rvId)) {
+                 System.out.println("Error: RV with ID " + rvId + " does not exist!");
+                 return;
+             }
+
+             // Saisie des nouvelles données
+             System.out.print("Enter the new date (YYYY-MM-DD HH:MM:SS): ");
+             String date = scanner.nextLine();
+             String dateSplit[] = date.split(" ");
+             String dateA = dateSplit[0];
+             String dateH = dateSplit[1];
+
+             System.out.print("New Note: ");
+             String note = scanner.nextLine();
+
+             System.out.print("New Patient CIN: ");
+             String cinP = scanner.nextLine();
+
+             // Vérifier si le patient existe
+             if (!patientExists(cinP)) {
+                 System.out.println("Error: Patient with CIN " + cinP + " does not exist!");
+                 return;
+             }
+
+             // Liaison des paramètres
+             pstmt.setString(1, note);
+             pstmt.setString(2, dateA);
+             pstmt.setString(3, dateH);
+             pstmt.setString(4, cinP);
+             pstmt.setInt(5, rvId);
+
+             // Exécution de la mise à jour
+             int rowsAffected = pstmt.executeUpdate();
+
+             if (rowsAffected > 0) {
+                 System.out.println("The appointment has been successfully updated.");
+             } else {
+                 System.out.println("No appointment was updated. Please check the RV ID.");
+             }
+
+         } catch (SQLException e) {
+             System.err.println("Database error occurred: " + e.getMessage());
+             e.printStackTrace();
+         } catch (ArrayIndexOutOfBoundsException e) {
+             System.err.println("Invalid date format! Please use: YYYY-MM-DD HH:MM:SS");
+         }
+     }
+
+    // I use this method to resolve the NoSuchElementException
+    // that occurs when the Scanner tries to read an entry that doesn't exist
+    // or when the input stream has been closed.
+
+    // Firstly, I use a single Scanner object for the entire application
+    // declaring it static and final to avoid conflicts.
+
+    // Secondly, I use this method to clean up the Scanner buffer
+    // after each read, especially after nextInt(), nextDouble(), etc.
+    // to prevent any remaining characters (\n) from interfering with subsequent reads.
+
+    public static void clearScannerBuffer() {
+        if (scanner.hasNextLine()) {
+            scanner.nextLine(); // Read and discard any remaining input
+        }
+    }
+    public static void newRV() {
+        String rqt = "INSERT INTO RendezVous (note,date,heure, cinp) VALUES (?,?,?,?)";
+        try (Connection cn = DriverManager.getConnection(url, user, password)){
+             PreparedStatement pstmt = cn.prepareStatement(rqt);
+
+
+            System.out.print("Enter the new date (YYYY-MM-DD HH:MM:SS): ");
+            clearScannerBuffer();
+            String date = scanner.nextLine();
+            String dateSplit[] = date.split(" ");
+            String dateA = dateSplit[0];
+            String dateH = dateSplit[1];
+            System.out.println(date);
+            System.out.print("Note :  ");
+            String note = scanner.nextLine();
+            System.out.print("Patient CIN: ");
+            String cinP = scanner.nextLine();
+            // Safely bind your variables to the placeholders
+            pstmt.setString(1, note);
+            pstmt.setString(2, dateA);
+            pstmt.setString(3, dateH);
+            pstmt.setString(4, cinP);
+
+            // Execute the query. You don't pass the SQL string here.
+            int rowsAffected = pstmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("The appointment has been successfully added.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Database error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
   
 
     public static void controle() {
@@ -117,9 +235,8 @@ public class RendezVousManager extends BDInfo{
                     + "    3- supprimer les RV precedents \r\n"
                     + "    4- ajouter un RV\r\n"
                     + "    0- Retour");
-            Scanner scan = new Scanner(System.in);
             System.out.print(">> ");
-            int choix = scan.nextInt();
+            int choix = scanner.nextInt();
             switch(choix) {
                 case 0:
                     quit = true;
@@ -139,16 +256,15 @@ public class RendezVousManager extends BDInfo{
                                     System.out.println("++++++++++++++++   Rendez-Vous   ++++++++++++++++\r\n"
 					+ "    1- Ajouter RV par clavier\r\n"
 					+ "    0- Retour");
-                                    @SuppressWarnings("resource")
-                                    Scanner s = new Scanner(System.in);
                                     System.out.print(">> ");
-                                int c = s.nextInt();
+                                    clearScannerBuffer();
+                                int c = scanner.nextInt();
                                 switch(c) {
                                 case 0:
-                                    quit = true;
+                                    q = true;
                                     break;
                                 case 1:
-                                    NewRV();
+                                    newRV();
                                     break;
                                 }
                                 }
