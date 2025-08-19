@@ -12,101 +12,76 @@ import java.sql.*;
  */
 public class DBManager extends BDInfo {
 
-    public static void createDBTables() throws SQLException{
-        try {
+	public static void createDBTables() throws SQLException {
+		try {
+			// 1. Create Database
 			String createBD = "CREATE DATABASE IF NOT EXISTS cabinetdoctor";
-			Connection con = DriverManager.getConnection(protocol + "//" + ip + ":" + port , user, password);
+			Connection con = DriverManager.getConnection(protocol + "//" + ip + ":" + port, user, password);
 			Statement stm = con.createStatement();
 			stm.execute(createBD);
-			System.out.println("Database has been created.");
+			System.out.println("✅ Database created (if not exists).");
 			con.close();
+
+			// 2. Connect to the DB
 			con = DriverManager.getConnection(url, user, password);
 			stm = con.createStatement();
-			String createRV = "Create Table if not exists RendezVous(\r\n"
-					+ "    id int PRIMARY KEY AUTO_INCREMENT,\r\n"
-					+ "    note text,\r\n"
-					+ "    date date not NULL,\r\n"
-					+ "    heure time,\r\n"
-					+ "    cinP varchar(10),\r\n"
-					+ "    foreign key (cinP) REFERENCES Patient(cin)\r\n"
+
+			// --- PATIENT ---
+			String createP = "CREATE TABLE IF NOT EXISTS Patient ("
+					+ " cin VARCHAR(10) PRIMARY KEY NOT NULL,"
+					+ " nom VARCHAR(25) NOT NULL,"
+					+ " prenom VARCHAR(25) NOT NULL,"
+					+ " sexe VARCHAR(1),"
+					+ " ddn DATE"
 					+ ");";
-			String createV = "Create Table if not exists Visit(\r\n"
-					+ "    id int PRIMARY KEY AUTO_INCREMENT,\r\n"
-					+ "    symptoms text not NULL,\r\n"
-					+ "    diagnostics text NOT NULL,\r\n"
-					+ "    note text,\r\n"
-					+ "    deh datetime,\r\n"
-					+ "    type varchar(25),\r\n"
-					+ "    montant int,\r\n"
-					+ "    cin varchar(10),\r\n"
-					+ "    foreign key (cin) REFERENCES Patient(cin)\r\n"
+
+			// --- RENDEZVOUS ---
+			String createRV = "CREATE TABLE IF NOT EXISTS RendezVous ("
+					+ " id INT PRIMARY KEY AUTO_INCREMENT,"
+					+ " note TEXT,"
+					+ " date DATE NOT NULL,"
+					+ " heure TIME,"
+					+ " cinP VARCHAR(10),"
+					+ " FOREIGN KEY (cinP) REFERENCES Patient(cin) ON UPDATE CASCADE ON DELETE CASCADE"
 					+ ");";
-			String createO = "Create Table if not exists Ordonnance(\r\n"
-					+ "    id int PRIMARY KEY AUTO_INCREMENT,\r\n"
-					+ "    idV int,\r\n"
-					+ "    medicament text,\r\n"
-					+ "    test text,\r\n"
-					+ "    note text,\r\n"
-					+ "    foreign key (idV) REFERENCES Visit(id)\r\n"
+
+			// --- VISIT ---
+			String createV = "CREATE TABLE IF NOT EXISTS Visit ("
+					+ " id INT PRIMARY KEY AUTO_INCREMENT,"
+					+ " symptoms TEXT NOT NULL,"
+					+ " diagnostics TEXT NOT NULL,"
+					+ " note TEXT,"
+					+ " deh DATETIME,"
+					+ " type VARCHAR(25),"
+					+ " montant INT,"
+					+ " cinP VARCHAR(10),"
+					+ " FOREIGN KEY (cinP) REFERENCES Patient(cin) ON UPDATE CASCADE ON DELETE CASCADE"
 					+ ");";
-			String createP = "Create Table if not exists Patient(\r\n"
-					+ "    cin varchar(10) PRIMARY KEY NOT NULL,\r\n"
-					+ "    nom varchar(25) NOT NULL,\r\n"
-					+ "    prenom varchar(25) NOT NULL,\r\n"
-					+ "    sexe varchar(1),\r\n"
-					+ "    ddn date,\r\n"
-					+ "    tele varchar(10)\r\n"
+
+			// --- ORDONNANCE ---
+			String createO = "CREATE TABLE IF NOT EXISTS Ordonnance ("
+					+ " id INT PRIMARY KEY AUTO_INCREMENT,"
+					+ " idV INT,"
+					+ " medicament TEXT,"
+					+ " test TEXT,"
+					+ " note TEXT,"
+					+ " FOREIGN KEY (idV) REFERENCES Visit(id) ON UPDATE CASCADE ON DELETE CASCADE"
 					+ ");";
-			
+
+			// Execute in correct order
 			stm.executeUpdate(createP);
 			stm.executeUpdate(createRV);
 			stm.executeUpdate(createV);
 			stm.executeUpdate(createO);
-			System.out.println("Tables has been created.");
+
+			System.out.println("Tables created successfully.");
 			con.close();
-		}catch(SQLException e) {
-			System.err.println(e);
+
+		} catch (SQLException e) {
+			System.err.println("Error creating DB or tables: " + e.getMessage());
 		}
+	}
 
-    }
-    
-    public static void createDBUsers() throws SQLException{
-        try {
-            Connection con = DriverManager.getConnection(url, user, password);
-            Statement stm = con.createStatement();
 
-            String createUsersTable = "CREATE TABLE IF NOT EXISTS Users (cin varchar(30) PRIMARY KEY NOT NULL, username varchar(30), password varchar(30), tdc time, ddc date, email text)";
-            String createAdminTable = "CREATE TABLE IF NOT EXISTS Admin (id int PRIMARY KEY AUTO_INCREMENT, username varchar(30), password varchar(30))";
-            String createAuthUsersTable = "CREATE TABLE IF NOT EXISTS AuthUsers (id int PRIMARY KEY AUTO_INCREMENT, cin varchar(30), FOREIGN KEY (cin) REFERENCES Users(cin))";
-            String createUserArchiveTable = "CREATE TABLE IF NOT EXISTS UserArchive (id int PRIMARY KEY AUTO_INCREMENT, cin varchar(30), type varchar(10), ddl date, tdl time, FOREIGN KEY (cin) REFERENCES Users(cin))";
-            String createAuthenticatedParTable = "CREATE TABLE IF NOT EXISTS AuthenticatedPar (idA int, cinU varchar(30), date date, heure time, FOREIGN KEY (cinU) REFERENCES Users(cin), FOREIGN KEY (idA) REFERENCES Admin(id))";
-
-            stm.executeUpdate(createUsersTable);
-            stm.executeUpdate(createAdminTable);
-            stm.executeUpdate(createAuthUsersTable);
-            stm.executeUpdate(createUserArchiveTable);
-            stm.executeUpdate(createAuthenticatedParTable);
-            System.out.println("DB et les tables créées avec succès.");
-            // Insertion des données
-            String insertIntoUsers = "INSERT INTO Users (cin, username, password, tdc, ddc, email) VALUES ('L000000', 'user1', 'user1', CURTIME(), CURDATE(), 'user1@gmail.com')";
-            
-            System.out.println("\n++++++++++++++++----------  L'utilisateur user1 de password user1 cree avec succès pour le test.-----------++++++++++++++++++\n");
-            String insertIntoAuthUsers = "INSERT INTO AuthUsers (cin) VALUES ('L000000')";
-            String insertIntoUserArchive = "INSERT INTO UserArchive (cin, type, ddl, tdl) VALUES ('L000000', 'new', CURDATE(), CURTIME())";
-            String insertIntoAuthenticatedPar = "INSERT INTO AuthenticatedPar (idA, cinU, date, heure) VALUES (1, 'L000000', CURDATE(), CURTIME())";
-
-            stm.executeUpdate(insertIntoUsers);
-            stm.executeUpdate(insertIntoAuthUsers);
-            stm.executeUpdate(insertIntoUserArchive);
-            stm.executeUpdate(insertIntoAuthenticatedPar);
-
-            System.out.println("Tables créées avec succès.");
-
-            con.close();
-            System.out.println("Queries executed successfully.");
-        } catch (SQLException e) {
-            System.err.println(e);
-        }
-    
-    }
 }
+
