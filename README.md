@@ -99,7 +99,7 @@ Export reports (patients list, prescriptions, etc.).
 
 ## 📖 Documentation
 
-Database Models
+Database Models (https://github.com/yassin-elkhamlichi/Cabinet-Doctor-with-storage-in-DB-using-Terminal/blob/main/Cabinet_Doctor_With_Teminal/Tables.sql)
 
 Source code available in this repository.
 
