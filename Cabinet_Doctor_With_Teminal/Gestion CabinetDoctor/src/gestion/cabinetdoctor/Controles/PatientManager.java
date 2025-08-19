@@ -125,68 +125,7 @@ public class PatientManager extends BDInfo {
 		}
 	}
          
-     public static void ajouterFile() throws SQLException{
-                Connection con = null;
-                Savepoint savepoint2= null;
-        try {
-                  con = DriverManager.getConnection(url, user, password);
-             //definer la gestion des transition manuelles
-                    con.setAutoCommit(false);
-                  //definer un point de sauvegarder
-                   savepoint2 = con.setSavepoint("save2");
-         // C. Créer un objet Statement
-         PreparedStatement stmt = con.prepareStatement("INSERT INTO Patient (cin, nom, prenom, sexe, ddn, tele) VALUES (?, ?, ?, ?, ?, ?)");
-         FileInputStream file = new FileInputStream(filesPath + "/Add/AddPaitent.txt");
-        Scanner s = new Scanner(file);
 
-        System.out.println("Liste des patients importés à partir du fichier 'AddPaitent.txt'\n");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("    CIN\t|\tNom\t\t|\tPrenom\t\t|\tSexe\t|\tD.naissance\t|\ttelephone\n");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-        int l1 = 25, l2 = 15;
-        while (s.hasNextLine()) {
-            String cin = s.next();
-            String nom = s.next();
-            String prenom =s.next();
-            String sexe = s.next();
-            String ddn = s.next();
-            String tele = s.next();
-
-            stmt.setString(1, cin);
-            stmt.setString(2, nom);
-            stmt.setString(3, prenom);
-            stmt.setString(4, sexe);
-            stmt.setString(5, ddn);
-            stmt.setString(6, tele);
-
-            cin = String.format("%-" + l2 + "s", cin);
-            nom = String.format("%-" + l1 + "s", nom);
-            prenom = String.format("%-" + l1 + "s", prenom);
-            sexe = String.format("%-" + l2 + "s", sexe);
-            ddn = String.format("%-" + l1 + "s", ddn);
-            tele = String.format("%-" + l1 + "s", tele);
-
-            System.out.print(" " + cin + nom + prenom + sexe + ddn + tele + "\n");
-      
-            // Exécuter l'instruction SQL d'insertion
-            int i = stmt.executeUpdate();
-        }
-
-        // Fermer les ressources
-        stmt.close();
-        s.close();
-        file.close();
-        System.out.println("Toutes les données des patients ont été insérées avec succès.");
-		con.commit();
-         // E. Fermer la connexion
-         con.close();
-      }  catch (IOException | SQLException e) {
-         // gestion des exceptions
-          con.rollback(savepoint2);
-
-      }
-    }
-            
 	    public static void afficherP() throws SQLException{
 		 Connection con = null;
 		 Savepoint savepoint3= null;
@@ -201,11 +140,7 @@ public class PatientManager extends BDInfo {
 	        String sql = "SELECT * FROM Patient ORDER BY nom ASC";
             ResultSet res = smt.executeQuery(sql);  
 
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filesPath + "/List/ListPatient.txt"));
-
-        writer.write("    CIN\t|\tNom\t\t|\tPrenom\t\t|\tSexe\t|\tD.naissance\t|\ttelephone\n");
-        writer.write("------------------------------------------------------------------------------------------------------------------------------\n");
-        System.out.println("Liste des Patients :");
+          System.out.println("Liste des Patients :");
             System.out.println("------------------------------------------------------------------------------------------------------------------------------");
             System.out.printf("    CIN\t|\tNom\t\t|\tPrenom\t\t|\tSexe\t|\tD.naissance\t|\ttelephone\n");
             System.out.println("------------------------------------------------------------------------------------------------------------------------------");
@@ -224,22 +159,12 @@ public class PatientManager extends BDInfo {
 					"| sexe :" + sexe +
 					"| ddn : " + ddn +
 					"| tele : " + tele + "\n");
-            // Écrire chaque ligne dans le fichier
-            writer.write("Cin :  " + cin +
-					"| Nom : "	+ nom +
-					"| Prenom :" + prenom +
-					"| sexe :" + sexe +
-					"| ddn : " + ddn +
-					"| tele : " + tele + "\n");
+
         }
+		con.commit();
+		con.close();
 
-        // Fermer le flux d'écriture
-        writer.close();
-        System.out.println("Les données ont été écrites dans le fichier ListPatient.txt avec succès.");
-		     con.commit();
-	         con.close();
-
-	        } catch (IOException | SQLException e) {
+	        } catch (SQLException e) {
                 assert con != null;
                 con.rollback(savepoint3);
 
@@ -279,8 +204,8 @@ public class PatientManager extends BDInfo {
                     }
 	    }
 	
-	public static void printAllPatients() throws SQLException {
-		String selectAll = "SELECT * FROM Patient;";
+	    public static void printAllPatients() throws SQLException {
+		        String selectAll = "SELECT * FROM Patient";
                 Connection con = null;
                 Savepoint savepoint5= null;
 		try {
@@ -397,7 +322,6 @@ public class PatientManager extends BDInfo {
                    while(!q) {
 					   System.out.println("++++++++++++++++   Patient   ++++++++++++++++\r\n"
 							+ "    1- Ajouter patient par clavier\r\n"
-							+ "    2- Ajouter patient par fichier\r\n"
 							+ "    0- Retour");
                                     @SuppressWarnings("resource")
                                     Scanner s = new Scanner(System.in);
@@ -409,9 +333,6 @@ public class PatientManager extends BDInfo {
                                     break;
                                 case 1:
                                     ajouter();
-                                    break;
-                                case 2:
-                                    ajouterFile();
                                     break;
                                 }
                                 }

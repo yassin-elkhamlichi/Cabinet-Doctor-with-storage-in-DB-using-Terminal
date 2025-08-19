@@ -20,11 +20,7 @@ public class RendezVousManager extends BDInfo{
         String sql = "SELECT note, date, heure, cinP FROM RendezVous WHERE date >= CURDATE() ORDER BY date ASC, heure ASC";
         ResultSet res = smt.executeQuery(sql);
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filesPath + "/List/ListRV.txt"));
-        int l1 = 25, l2 = 15; 
-
-        writer.write(String.format("%-" + l1 + "s | %-" + l1 + "s | %-" + l2 + "s | %-" + l2 + "s\n", "Note", "Date", "Heure", "CIN"));
-        writer.write("----------------------------------------------------------------------------------------\n");
+         int l1 = 25, l2 = 15;
 
         System.out.println("Liste des rendez-vous :");
         System.out.println("----------------------------------------------------------------------------------------");
@@ -39,17 +35,10 @@ public class RendezVousManager extends BDInfo{
 
             // Affichage dans la console
             System.out.println(note + " | " + date + " | " + heure + " | " + cinP);
-
-            // Écriture dans le fichier
-            writer.write(note + " | " + date + " | " + heure + " | " + cinP + "\n");
         }
 
-        // Fermeture du flux d'écriture
-        writer.close();
-        System.out.println("Les données ont été écrites dans le fichier ListRV.txt avec succès.");
-
         con.close();
-    } catch (SQLException | IOException e) {
+    } catch (SQLException  e) {
         System.out.println(e);
     }
 }
@@ -94,8 +83,6 @@ public class RendezVousManager extends BDInfo{
 			String Ndate = scanner.nextLine();  
 			String rqt = "UPDATE RendezVous SET date='" + Ndate + "' WHERE cinp='" + cin + "'";
 			int res = smt.executeUpdate(rqt);
-//			if(res == 1){ System.out.println("Update successful.");}
-//			else System.out.println("Update faild.");
 		} catch (SQLException e) {
 			System.err.println(e);
 		}
@@ -120,53 +107,6 @@ public class RendezVousManager extends BDInfo{
     }
 }
   
-    public static void addRVF() {
-    try {
-        Connection con = DriverManager.getConnection(url, user, password);
-        PreparedStatement stmt = con.prepareStatement("INSERT INTO RendezVous (note, date, heure, cinP) VALUES (?, ?, ?, ?)");
-        FileInputStream file = new FileInputStream(filesPath + "Add/AddRV.txt");
-        Scanner s = new Scanner(file);
-
-        System.out.println("Liste des rendez-vous importés à partir du fichier 'AddRV.txt'\n");
-        System.out.println("--------------------------------------------------------------------------------");
-        System.out.printf("    Note\t|\tDate\t|\tHeure\t|\tCIN Patient\n");
-        System.out.println("--------------------------------------------------------------------------------");
-        int l1 = 25, l2 = 15;
-        while (s.hasNextLine()) {
-            String note = s.next();
-            String date = s.next();
-            String heure = s.next();
-            String cinP = s.next();
-
-            stmt.setString(1, note);
-            stmt.setString(2, date);
-            stmt.setString(3, heure);
-            stmt.setString(4, cinP);
-
-            note = String.format("%-" + l2 + "s", note);
-            date = String.format("%-" + l1 + "s", date);
-            heure = String.format("%-" + l1 + "s", heure);
-            cinP = String.format("%-" + l2 + "s", cinP);
-
-            System.out.print(" " + note + date + heure + cinP + "\n");
-
-            // Exécuter l'instruction SQL d'insertion
-            int i = stmt.executeUpdate();
-        }
-
-        // Fermer les ressources
-        stmt.close();
-        s.close();
-        file.close();
-        System.out.println("Toutes les données des rendez-vous ont été insérées avec succès.");
-
-        // Fermer la connexion
-        con.close();
-    } catch (IOException | SQLException e) {
-        // Gestion des exceptions
-        System.out.println(e);
-    }
-}
 
     public static void controle() {
         boolean quit = false;
@@ -198,7 +138,6 @@ public class RendezVousManager extends BDInfo{
                                 while(!q) {
                                     System.out.println("++++++++++++++++   Rendez-Vous   ++++++++++++++++\r\n"
 					+ "    1- Ajouter RV par clavier\r\n"
-					+ "    2- Ajouter RV par fichier\r\n"
 					+ "    0- Retour");
                                     @SuppressWarnings("resource")
                                     Scanner s = new Scanner(System.in);
@@ -210,9 +149,6 @@ public class RendezVousManager extends BDInfo{
                                     break;
                                 case 1:
                                     NewRV();
-                                    break;
-                                case 2:
-                                    addRVF();
                                     break;
                                 }
                                 }

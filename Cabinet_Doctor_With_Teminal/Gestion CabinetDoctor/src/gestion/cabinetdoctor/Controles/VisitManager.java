@@ -13,69 +13,7 @@ public class VisitManager extends BDInfo{
 		System.out.print(str+" >> ");
 		return "'" + s.nextLine() + "', ";
 	}
-        
-        public static void ajouterVF() {
-    try {
-        Connection con = DriverManager.getConnection(url, user, password);
-        PreparedStatement stmt = con.prepareStatement("INSERT INTO Visit (symptoms, diagnostics, note, deh, type, montant, cin) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        FileInputStream file = new FileInputStream( filesPath + "/Add/AddVisit.txt");
-        Scanner s = new Scanner(file);
-        
-        int l1 = 25, l2 = 15, l3=40;
-        System.out.println("Liste des visites importées à partir du fichier 'AddVisit.txt'\n");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-        System.out.printf("%-" + l3 + "s|%-" + l3 + "s|%-" + l3 + "s|%-" + l1 + "s|%-" + l1 + "s|%-" + l2 + "s|%-" + l2 + "s\n", "Symptômes", "Diagnostic", "Note", "Date/Heure", "Type", "Montant", "CIN");
-        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");     
-        
-        while (s.hasNextLine()) {
-            String symptoms = s.next();
-            String diagnostics = s.next();
-            String note = s.next();
-            String date = s.next();
-            String heure = s.next();
-            String deh = date+' '+heure;
-            String type = s.next();
-            String montant = s.next();
-            String cin = s.next();
-            
-            stmt.setString(1, symptoms);
-            stmt.setString(2, diagnostics);
-            stmt.setString(3, note);
-            stmt.setString(4, deh);
-            stmt.setString(5, type);
-            stmt.setInt(6, Integer.parseInt(montant));
-            stmt.setString(7, cin);
 
-            // Affichage des données de la visite
-            
-            symptoms = String.format("%-" + l3 + "s", " "+symptoms);
-            diagnostics = String.format("%-" + l3 + "s", "  "+diagnostics);
-            note = String.format("%-" + l3 + "s", "  "+note);
-            deh = String.format("%-" + l1 + "s", " "+deh);
-            type = String.format("%-" + l1 + "s", "  "+type);
-            montant = String.format("%-" + l2 + "s", "        "+montant);
-            cin = String.format("%-" + l2 + "s", "    "+cin);
-
-            // Affichage des données de la visite dans une seule ligne
-            System.out.println(symptoms + diagnostics + note + deh + type + montant + cin);
-           
-            // Exécuter l'instruction SQL d'insertion
-            int i = stmt.executeUpdate();
-        }
-
-        // Fermer les ressources
-        stmt.close();
-        s.close();
-        file.close();
-        System.out.println("Toutes les données des visites ont été insérées avec succès.");
-
-        // Fermer la connexion
-        con.close();
-    } catch (IOException | SQLException e) {
-        e.printStackTrace();
-        }
-    }
-        
         public static void afficherV() {
     try {
         Connection con = DriverManager.getConnection(url, user, password);
@@ -83,11 +21,7 @@ public class VisitManager extends BDInfo{
         String sql = "SELECT symptoms, diagnostics, note, deh, type, montant, cin FROM Visit ORDER BY deh ASC";
         ResultSet res = smt.executeQuery(sql);
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filesPath + "/List/ListVisit.txt"));
-        int l1 = 25, l2 = 15, l3=40; 
-
-        writer.write(String.format("%-" + l3 + "s | %-" + l3 + "s | %-" + l3 + "s | %-" + l1 + "s | %-" + l1 + "s | %-" + l2 + "s | %-" + l2 + "s\n", "Symptômes", "Diagnostic", "Note", "Date/Heure", "Type", "Montant", "CIN"));
-        writer.write("--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
+        int l1 = 25, l2 = 15, l3=40;
 
         System.out.println("Liste des visites :");
         System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -106,16 +40,10 @@ public class VisitManager extends BDInfo{
             // Affichage dans la console
             System.out.println(symptoms + "|" + diagnostics + "|" + note + "|" + deh + "|" + type + "|" + montant + "|" + cin);
 
-            // Écriture dans le fichier
-            writer.write(symptoms + " | " + diagnostics + " | " + note + " | " + deh + " | " + type + " | " + montant + " | " + cin + "\n");
         }
 
-        // Fermeture du flux d'écriture
-        writer.close();
-        System.out.println("Les données ont été écrites dans le fichier ListVisit.txt avec succès.");
-
         con.close();
-    } catch (SQLException | IOException e) {
+    } catch (SQLException e) {
         System.out.println(e);
         }
     }
