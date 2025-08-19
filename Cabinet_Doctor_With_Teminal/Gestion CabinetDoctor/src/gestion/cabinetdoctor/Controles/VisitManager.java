@@ -18,7 +18,7 @@ public class VisitManager extends BDInfo{
     try {
         Connection con = DriverManager.getConnection(url, user, password);
         Statement smt = con.createStatement();
-        String sql = "SELECT symptoms, diagnostics, note, deh, type, montant, cin FROM Visit ORDER BY deh ASC";
+        String sql = "SELECT *  FROM Visit ORDER BY deh ASC";
         ResultSet res = smt.executeQuery(sql);
 
         int l1 = 25, l2 = 15, l3=40;
