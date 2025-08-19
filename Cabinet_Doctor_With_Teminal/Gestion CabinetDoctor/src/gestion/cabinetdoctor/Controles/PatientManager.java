@@ -72,13 +72,13 @@ public class PatientManager extends BDInfo {
 			savepoint1 = con.setSavepoint("save5");
 
 			// C. Créer un objet PrepareStatement
-			PreparedStatement psmt = con.prepareStatement("SELECT * Patient where cin = ?") ;
+			PreparedStatement psmt = con.prepareStatement("SELECT * FROM Patient WHERE cin LIKE ?");
 			System.out.println("Entrez le CIN du patient à modifier :");
 			Scanner scanner = new Scanner(System.in);
 			String cin = scanner.nextLine();
 			psmt.setString(1, cin);
 			ResultSet res = psmt.executeQuery();
-			if (!res.next()) {
+			if (!res.next()) {  // Move to next row, check if it exists
 				System.out.println("Aucun patient trouvé avec le CIN : " + cin);
 				return;
 			}
@@ -103,13 +103,14 @@ public class PatientManager extends BDInfo {
 			System.out.print("new Téléphone : ");
 			String tele = scanner.nextLine();
 
+			psmt = con.prepareStatement("UPDATE Patient SET cin = ?, nom = ? , prenom = ? , sexe = ? ,ddn = ? ,tele = ? WHERE  cin = ?") ;
+			psmt.setString(7, cin);
 			psmt.setString(1, cin);
 			psmt.setString(2, nom);
 			psmt.setString(3, prenom);
 			psmt.setString(4, sexe);
 			psmt.setString(5, ddn);
 			psmt.setString(6, tele);
-			psmt = con.prepareStatement("UPDATE Patient SET cin = cin, nom = nom , prenom = prenom , sexe = sexe ,ddn = ddn ,tele = tele WHERE  cin = ?") ;
 			int i = psmt.executeUpdate();
 
 			System.out.println(i+"Le patient inséré avec succès.");
@@ -120,6 +121,7 @@ public class PatientManager extends BDInfo {
 			// gestion des exceptions
 			assert con != null;
 			con.rollback(savepoint1);
+			new RuntimeException(e);
 
 		}
 	}
