@@ -1,8 +1,8 @@
 ---
 
-* 🏥 Cabinet Doctor Management (CRUD Application)
+#🏥 Cabinet Doctor Management (CRUD Application)
 
-📌 Overview
+#📌 Overview
 
 This is a Java-based CRUD application designed for managing a medical clinic. It allows doctors to handle patient records, appointments, visits, and prescriptions efficiently.
 The system is entirely terminal-based and uses MySQL for data storage.
@@ -12,7 +12,7 @@ It is a lightweight, educational project that demonstrates how to build a databa
 
 ---
 
-✨ Features
+#✨ Features
 
 👨‍⚕️ Manage patients (add, update, delete, view)
 
@@ -26,7 +26,7 @@ It is a lightweight, educational project that demonstrates how to build a databa
 
 ---
 
-🛠️ Technologies Used
+#🛠️ Technologies Used
 
 Java (Core, JDBC)
 
@@ -37,7 +37,7 @@ Terminal / Console (for interaction)
 
 ---
 
-🗂️ Database Design
+#🗂️ Database Design
 
 The project follows a structured design with three levels of database modeling:
 
@@ -53,7 +53,7 @@ Physical Model (MPD): Implements the logical model in MySQL with tables and rela
 
 ---
 
-🚀 Installation & Usage
+#🚀 Installation & Usage
 
 > ⚠️ Currently, the project does not include an automatic setup script. You will need to configure the MySQL database manually before running.
 
@@ -81,7 +81,7 @@ java -cp bin gestion.cabinetdoctor.Main
 
 ---
 
-📈 Future Improvements
+#📈 Future Improvements
 
 Add a setup script for automatic database creation.
 
@@ -95,7 +95,7 @@ Export reports (patients list, prescriptions, etc.).
 
 ---
 
-📖 Documentation
+#📖 Documentation
 
 Database Models
 
