@@ -75,19 +75,19 @@ public class PatientManager extends BDInfo {
 			PreparedStatement psmt = con.prepareStatement("SELECT * FROM Patient WHERE cin LIKE ?");
 			System.out.println("Entrez le CIN du patient à modifier :");
 			Scanner scanner = new Scanner(System.in);
-			String cin = scanner.nextLine();
-			psmt.setString(1, cin);
+			String cinU = scanner.nextLine();
+			psmt.setString(1, cinU);
 			ResultSet res = psmt.executeQuery();
 			if (!res.next()) {  // Move to next row, check if it exists
-				System.out.println("Aucun patient trouvé avec le CIN : " + cin);
+				System.out.println("Aucun patient trouvé avec le CIN : " + cinU);
 				return;
 			}
 			else{
-				System.out.println("Patient trouvé \n : Cin  : " + res.getString("cin") + " Nom : " + res.getString("nom") + "Prenom : " + res.getString("prenom") + " Sexe : " + res.getString("sexe") + " Ddn : " + res.getString("ddn") + " Tele : " + res.getString("tele")); }
+				System.out.println("Patient trouvé \n : Cin  : " + res.getString("cin") + " | Nom : " + res.getString("nom") + " | Prenom : " + res.getString("prenom") + " |  Sexe : " + res.getString("sexe") + " |  Ddn : " + res.getString("ddn") + " |  Tele : " + res.getString("tele")); }
 
 			System.out.println("Entrez les nouvelles informations du patient :");
 			System.out.print("new CIN : ");
-			cin = scanner.nextLine();
+			String cin = scanner.nextLine();
 			System.out.print("new Nom : ");
 			String nom = scanner.nextLine();
 
@@ -104,7 +104,7 @@ public class PatientManager extends BDInfo {
 			String tele = scanner.nextLine();
 
 			psmt = con.prepareStatement("UPDATE Patient SET cin = ?, nom = ? , prenom = ? , sexe = ? ,ddn = ? ,tele = ? WHERE  cin = ?") ;
-			psmt.setString(7, cin);
+			psmt.setString(7, cinU);
 			psmt.setString(1, cin);
 			psmt.setString(2, nom);
 			psmt.setString(3, prenom);
@@ -113,7 +113,7 @@ public class PatientManager extends BDInfo {
 			psmt.setString(6, tele);
 			int i = psmt.executeUpdate();
 
-			System.out.println(i+"Le patient inséré avec succès.");
+			System.out.println(i +" Le patient inséré avec succès.");
 			con.commit();
 			// E. Fermer la connexion
 			con.close();
@@ -121,7 +121,6 @@ public class PatientManager extends BDInfo {
 			// gestion des exceptions
 			assert con != null;
 			con.rollback(savepoint1);
-			new RuntimeException(e);
 
 		}
 	}
