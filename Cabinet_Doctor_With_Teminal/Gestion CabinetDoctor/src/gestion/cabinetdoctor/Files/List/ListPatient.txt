@@ -1,3 +1,4 @@
     CIN	|	Nom		|	Prenom		|	Sexe	|	D.naissance	|	telephone
 ------------------------------------------------------------------------------------------------------------------------------
 Cin :  L1237          | Nom : ramzi                    | Prenom :monir                    | sexe :M              | ddn : 2002-02-06               | tele : 063413532                
+Cin :  L4545          | Nom : yahya                    | Prenom :el khamlichi             | sexe :M              | ddn : 2007-06-05               | tele : 064549421                
