@@ -276,20 +276,36 @@ public class PatientManager extends BDInfo {
 		while(!quit) {
 			System.out.println("++++++++++++++++   Selectionner   ++++++++++++++++\r\n"
 					+ "    1- Ajouter une visit\r\n"
-					+ "    2- Ajouter une ordonnance\r\n"
+					+ "    2- modifier une visit\r\n"
+					+ "    3- supprimer une visit\r\n"
+					+ "    4- Ajouter une ordonnance\r\n"
+					+ "    5- modifier une ordonnance\r\n"
+					+ "    6- supprimer une ordonnance\r\n"
 					+ "    0- Retour");
 			System.out.print(">>> ");
 			int choix = s.nextInt();
 			switch(choix) {
-			case 0:
-				quit = true;
-				break;
-			case 1:
-				VisitManager.newVisit(cin);
-				break;
-			case 2:
-				OrdonnanceManager.newOrd();
-				break;
+				case 0:
+					quit = true;
+					break;
+				case 1:
+					VisitManager.newVisit(cin);
+					break;
+				case 2:
+					VisitManager.updateVisit();
+					break;
+				case 3:
+					VisitManager.;
+					break;
+				case 4:
+					OrdonnanceManager.newOrd();
+					break;
+				case 5:
+					OrdonnanceManager.ModifierOrd();
+					break;
+				case 6:
+					OrdonnanceManager.supprimerOrd();
+					break;
 			}
 			
 		}
